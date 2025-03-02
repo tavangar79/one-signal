@@ -18,6 +18,7 @@ rootProject.allprojects {
         mavenCentral()
         flatDir {
             dirs 'libs'
+            dirs project(':onesignal_flutter').file('libs')
         }
     }
 }
