@@ -38,5 +38,10 @@ android {
 }
 
 dependencies {
-    implementation 'com.onesignal:OneSignal:5.1.23'
+    // implementation 'com.onesignal:OneSignal:5.1.23'
+    implementation (name: "core-5.1.28-patched", ext: "aar")
+    implementation (name: "in-app-messages-5.1.28", ext: "aar")
+    implementation (name: "location-5.1.28", ext: "aar")
+    implementation (name: "notifications-5.1.28", ext: "aar")
+    implementation (name: "OneSignal-5.1.28", ext: "aar")
 }
