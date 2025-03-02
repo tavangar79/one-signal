@@ -18,7 +18,6 @@ rootProject.allprojects {
         mavenCentral()
         flatDir {
             dirs 'libs'
-            dirs project(':one-signal').file('libs')
         }
     }
 }
