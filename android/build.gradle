@@ -16,7 +16,7 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
-        latDir {
+        flatDir {
             dirs 'libs'
             dirs project(':one-signal').file('libs')
         }
