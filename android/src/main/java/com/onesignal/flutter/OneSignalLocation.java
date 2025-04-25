@@ -15,8 +15,6 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 public class OneSignalLocation extends FlutterRegistrarResponder implements MethodCallHandler {
 
@@ -43,7 +41,7 @@ public class OneSignalLocation extends FlutterRegistrarResponder implements Meth
         OneSignal.getLocation().requestPermission(Continue.none());
         replySuccess(reply, null);
     }
-    
+
     private void setShared(MethodCall call, Result result) {
         OneSignal.getLocation().setShared((boolean) call.arguments);
         replySuccess(result, null);

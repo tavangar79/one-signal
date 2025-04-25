@@ -4,7 +4,6 @@ import com.onesignal.debug.internal.logging.Logging;
 import com.onesignal.OneSignal;
 import com.onesignal.Continue;
 
-
 import com.onesignal.notifications.INotification;
 import com.onesignal.notifications.INotificationClickEvent;
 import com.onesignal.notifications.INotificationWillDisplayEvent;
@@ -33,13 +32,11 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
-public class OneSignalNotifications extends FlutterRegistrarResponder implements MethodCallHandler, INotificationClickListener, INotificationLifecycleListener, IPermissionObserver {
+public class OneSignalNotifications extends FlutterRegistrarResponder
+        implements MethodCallHandler, INotificationClickListener, INotificationLifecycleListener, IPermissionObserver {
     private final HashMap<String, INotificationWillDisplayEvent> notificationOnWillDisplayEventCache = new HashMap<>();
     private final HashMap<String, INotificationWillDisplayEvent> preventedDefaultCache = new HashMap<>();
-
 
     static void registerWith(BinaryMessenger messenger) {
         OneSignalNotifications controller = new OneSignalNotifications();
@@ -50,35 +47,36 @@ public class OneSignalNotifications extends FlutterRegistrarResponder implements
 
     @Override
     public void onMethodCall(MethodCall call, Result result) {
-    if (call.method.contentEquals("OneSignal#permission"))
-        replySuccess(result, OneSignal.getNotifications().getPermission());
-    else if (call.method.contentEquals("OneSignal#canRequest"))
-        replySuccess(result, OneSignal.getNotifications().getCanRequestPermission());
-    else if (call.method.contentEquals("OneSignal#requestPermission"))
-        this.requestPermission(call, result);
-    else if (call.method.contentEquals("OneSignal#removeNotification"))
-        this.removeNotification(call, result);
-    else if (call.method.contentEquals("OneSignal#removeGroupedNotifications"))
-        this.removeGroupedNotifications(call, result);
-    else if (call.method.contentEquals("OneSignal#clearAll"))
-        this.clearAll(call, result);
-    else if (call.method.contentEquals("OneSignal#displayNotification"))
-        this.displayNotification(call, result);
-    else if (call.method.contentEquals("OneSignal#preventDefault"))
-        this.preventDefault(call, result);
-    else if (call.method.contentEquals("OneSignal#lifecycleInit"))
-        this.lifecycleInit();
-    else if (call.method.contentEquals("OneSignal#proceedWithWillDisplay"))
-        this.proceedWithWillDisplay(call, result);
-    else if (call.method.contentEquals("OneSignal#addNativeClickListener"))
-        this.registerClickListener();
-    else
-        replyNotImplemented(result);
+        if (call.method.contentEquals("OneSignal#permission"))
+            replySuccess(result, OneSignal.getNotifications().getPermission());
+        else if (call.method.contentEquals("OneSignal#canRequest"))
+            replySuccess(result, OneSignal.getNotifications().getCanRequestPermission());
+        else if (call.method.contentEquals("OneSignal#requestPermission"))
+            this.requestPermission(call, result);
+        else if (call.method.contentEquals("OneSignal#removeNotification"))
+            this.removeNotification(call, result);
+        else if (call.method.contentEquals("OneSignal#removeGroupedNotifications"))
+            this.removeGroupedNotifications(call, result);
+        else if (call.method.contentEquals("OneSignal#clearAll"))
+            this.clearAll(call, result);
+        else if (call.method.contentEquals("OneSignal#displayNotification"))
+            this.displayNotification(call, result);
+        else if (call.method.contentEquals("OneSignal#preventDefault"))
+            this.preventDefault(call, result);
+        else if (call.method.contentEquals("OneSignal#lifecycleInit"))
+            this.lifecycleInit();
+        else if (call.method.contentEquals("OneSignal#proceedWithWillDisplay"))
+            this.proceedWithWillDisplay(call, result);
+        else if (call.method.contentEquals("OneSignal#addNativeClickListener"))
+            this.registerClickListener();
+        else
+            replyNotImplemented(result);
     }
 
     private void requestPermission(MethodCall call, Result result) {
         boolean fallback = (boolean) call.argument("fallbackToSettings");
-        // if permission already exists, return early as the method call will not resolve
+        // if permission already exists, return early as the method call will not
+        // resolve
         if (OneSignal.getNotifications().getPermission()) {
             replySuccess(result, true);
             return;
@@ -92,14 +90,14 @@ public class OneSignalNotifications extends FlutterRegistrarResponder implements
     private void removeNotification(MethodCall call, Result result) {
         int notificationId = call.argument("notificationId");
         OneSignal.getNotifications().removeNotification(notificationId);
-    
+
         replySuccess(result, null);
     }
 
     private void removeGroupedNotifications(MethodCall call, Result result) {
         String notificationGroup = call.argument("notificationGroup");
         OneSignal.getNotifications().removeGroupedNotifications(notificationGroup);
-    
+
         replySuccess(result, null);
     }
 
@@ -108,14 +106,18 @@ public class OneSignalNotifications extends FlutterRegistrarResponder implements
         replySuccess(result, null);
     }
 
-    /// Our bridge layer needs to preventDefault() so that the Flutter listener has time to preventDefault() before the notification is displayed
-    /// This function is called after all of the flutter listeners have responded to the willDisplay event. 
-    /// If any of them have called preventDefault() we will not call display(). Otherwise we will display.
+    /// Our bridge layer needs to preventDefault() so that the Flutter listener has
+    /// time to preventDefault() before the notification is displayed
+    /// This function is called after all of the flutter listeners have responded to
+    /// the willDisplay event.
+    /// If any of them have called preventDefault() we will not call display().
+    /// Otherwise we will display.
     private void proceedWithWillDisplay(MethodCall call, Result result) {
         String notificationId = call.argument("notificationId");
         INotificationWillDisplayEvent event = notificationOnWillDisplayEventCache.get(notificationId);
         if (event == null) {
-            Logging.error("Could not find onWillDisplayNotification event for notification with id: " + notificationId, null);
+            Logging.error("Could not find onWillDisplayNotification event for notification with id: " + notificationId,
+                    null);
             return;
         }
         if (this.preventedDefaultCache.containsKey(notificationId)) {
@@ -130,7 +132,8 @@ public class OneSignalNotifications extends FlutterRegistrarResponder implements
         String notificationId = call.argument("notificationId");
         INotificationWillDisplayEvent event = notificationOnWillDisplayEventCache.get(notificationId);
         if (event == null) {
-            Logging.error("Could not find onWillDisplayNotification event for notification with id: " + notificationId, null);
+            Logging.error("Could not find onWillDisplayNotification event for notification with id: " + notificationId,
+                    null);
             return;
         }
         event.getNotification().display();
@@ -141,7 +144,8 @@ public class OneSignalNotifications extends FlutterRegistrarResponder implements
         String notificationId = call.argument("notificationId");
         INotificationWillDisplayEvent event = notificationOnWillDisplayEventCache.get(notificationId);
         if (event == null) {
-            Logging.error("Could not find onWillDisplayNotification event for notification with id: " + notificationId, null);
+            Logging.error("Could not find onWillDisplayNotification event for notification with id: " + notificationId,
+                    null);
             return;
         }
         event.preventDefault();
@@ -152,10 +156,12 @@ public class OneSignalNotifications extends FlutterRegistrarResponder implements
     @Override
     public void onClick(INotificationClickEvent event) {
         try {
-            invokeMethodOnUiThread("OneSignal#onClickNotification", OneSignalSerializer.convertNotificationClickEventToMap(event));
+            invokeMethodOnUiThread("OneSignal#onClickNotification",
+                    OneSignalSerializer.convertNotificationClickEventToMap(event));
         } catch (JSONException e) {
             e.getStackTrace();
-            Logging.error("Encountered an error attempting to convert INotificationClickEvent object to hash map:" + e.toString(), null);
+            Logging.error("Encountered an error attempting to convert INotificationClickEvent object to hash map:"
+                    + e.toString(), null);
         }
     }
 
@@ -175,18 +181,21 @@ public class OneSignalNotifications extends FlutterRegistrarResponder implements
     public void onWillDisplay(INotificationWillDisplayEvent event) {
         INotification notification = event.getNotification();
         notificationOnWillDisplayEventCache.put(notification.getNotificationId(), event);
-        /// Our bridge layer needs to preventDefault() so that the Flutter listener has time to preventDefault() before the notification is displayed
+        /// Our bridge layer needs to preventDefault() so that the Flutter listener has
+        /// time to preventDefault() before the notification is displayed
         event.preventDefault();
         try {
-            invokeMethodOnUiThread("OneSignal#onWillDisplayNotification", OneSignalSerializer.convertNotificationWillDisplayEventToMap(event));
+            invokeMethodOnUiThread("OneSignal#onWillDisplayNotification",
+                    OneSignalSerializer.convertNotificationWillDisplayEventToMap(event));
         } catch (JSONException e) {
             e.getStackTrace();
-            Logging.error("Encountered an error attempting to convert INotificationWillDisplayEvent object to hash map:" + e.toString(), null);
+            Logging.error("Encountered an error attempting to convert INotificationWillDisplayEvent object to hash map:"
+                    + e.toString(), null);
         }
     }
 
     @Override
-    public void onNotificationPermissionChange(boolean permission)  { 
+    public void onNotificationPermissionChange(boolean permission) {
         HashMap<String, Object> hash = new HashMap<>();
         hash.put("permission", permission);
         invokeMethodOnUiThread("OneSignal#onNotificationPermissionDidChange", hash);
@@ -200,4 +209,4 @@ public class OneSignalNotifications extends FlutterRegistrarResponder implements
     private void registerClickListener() {
         OneSignal.getNotifications().addClickListener(this);
     }
-} 
+}

@@ -21,10 +21,9 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
-public class OneSignalPushSubscription extends FlutterRegistrarResponder implements MethodCallHandler, IPushSubscriptionObserver {
+public class OneSignalPushSubscription extends FlutterRegistrarResponder
+        implements MethodCallHandler, IPushSubscriptionObserver {
 
     static void registerWith(BinaryMessenger messenger) {
         OneSignalPushSubscription controller = new OneSignalPushSubscription();
@@ -55,6 +54,7 @@ public class OneSignalPushSubscription extends FlutterRegistrarResponder impleme
         OneSignal.getUser().getPushSubscription().optIn();
         replySuccess(reply, null);
     }
+
     private void optOut(MethodCall call, Result reply) {
         OneSignal.getUser().getPushSubscription().optOut();
         replySuccess(reply, null);
@@ -62,16 +62,18 @@ public class OneSignalPushSubscription extends FlutterRegistrarResponder impleme
 
     private void lifecycleInit() {
         OneSignal.getUser().getPushSubscription().addObserver(this);
-    }  
+    }
 
     @Override
     public void onPushSubscriptionChange(PushSubscriptionChangedState changeState) {
         try {
-            invokeMethodOnUiThread("OneSignal#onPushSubscriptionChange", OneSignalSerializer.convertOnPushSubscriptionChange(changeState));
+            invokeMethodOnUiThread("OneSignal#onPushSubscriptionChange",
+                    OneSignalSerializer.convertOnPushSubscriptionChange(changeState));
         } catch (JSONException e) {
             e.getStackTrace();
-            Logging.error("Encountered an error attempting to convert PushSubscriptionChangedState object to hash map:" + e.toString(), null);
-        }         
+            Logging.error("Encountered an error attempting to convert PushSubscriptionChangedState object to hash map:"
+                    + e.toString(), null);
+        }
     }
 
-} 
+}

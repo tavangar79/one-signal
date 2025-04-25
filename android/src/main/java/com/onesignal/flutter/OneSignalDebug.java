@@ -15,12 +15,10 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 public class OneSignalDebug extends FlutterRegistrarResponder implements MethodCallHandler {
-    
-   static void registerWith(BinaryMessenger messenger) {
+
+    static void registerWith(BinaryMessenger messenger) {
         OneSignalDebug controller = new OneSignalDebug();
         controller.messenger = messenger;
         controller.channel = new MethodChannel(messenger, "OneSignal#debug");
@@ -43,21 +41,19 @@ public class OneSignalDebug extends FlutterRegistrarResponder implements MethodC
             LogLevel consoleLogLevel = LogLevel.fromInt(console);
             OneSignal.getDebug().setLogLevel(consoleLogLevel);
             replySuccess(reply, null);
-        }
-        catch(ClassCastException e) {
+        } catch (ClassCastException e) {
             replyError(reply, "OneSignal", "failed with error: " + e.getMessage() + "\n" + e.getStackTrace(), null);
-        }  
+        }
     }
 
-    private void setAlertLevel(MethodCall call, Result reply) {  
+    private void setAlertLevel(MethodCall call, Result reply) {
         try {
             int visual = call.argument("visualLevel");
             LogLevel visualLogLevel = LogLevel.fromInt(visual);
             OneSignal.getDebug().setAlertLevel(visualLogLevel);
             replySuccess(reply, null);
-        }
-        catch(ClassCastException e) {
+        } catch (ClassCastException e) {
             replyError(reply, "OneSignal", "failed with error: " + e.getMessage() + "\n" + e.getStackTrace(), null);
-        }  
+        }
     }
 }
