@@ -56,8 +56,6 @@ public class OneSignalInAppMessages extends FlutterRegistrarResponder implements
     }
 
     private void addTriggers(MethodCall call, Result result) {
-        // call.arguments is being casted to a Map<String, Object> so a try-catch with
-        // a ClassCastException will be thrown
         try {
             OneSignal.getInAppMessages().addTriggers((Map<String, String>) call.arguments);
             replySuccess(result, null);
@@ -73,8 +71,6 @@ public class OneSignalInAppMessages extends FlutterRegistrarResponder implements
     }
 
     private void removeTriggers(MethodCall call, Result result) {
-        // call.arguments is being casted to a Collection<String> a try-catch with
-        // a ClassCastException will be thrown
         try {
             OneSignal.getInAppMessages().removeTriggers((Collection<String>) call.arguments);
             replySuccess(result, null);
@@ -121,7 +117,6 @@ public class OneSignalInAppMessages extends FlutterRegistrarResponder implements
             Logging.error("Encountered an error attempting to convert IInAppMessageWillDisplayEvent object to hash map:"
                     + e.toString(), null);
         }
-
     }
 
     @Override
@@ -158,6 +153,5 @@ public class OneSignalInAppMessages extends FlutterRegistrarResponder implements
             Logging.error("Encountered an error attempting to convert IInAppMessageDidDismissEvent object to hash map:"
                     + e.toString(), null);
         }
-
     }
 }

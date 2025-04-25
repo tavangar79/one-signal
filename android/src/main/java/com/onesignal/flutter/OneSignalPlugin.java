@@ -83,26 +83,6 @@ public class OneSignalPlugin extends FlutterRegistrarResponder
   public void onDetachedFromActivityForConfigChanges() {
   }
 
-  // This static method is only to remain compatible with apps that don't use the
-  // v2 Android embedding.
-  @Deprecated()
-  @SuppressLint("Registrar")
-  public static void registerWith(Registrar registrar) {
-    final OneSignalPlugin plugin = new OneSignalPlugin();
-    plugin.init(registrar.activeContext(), registrar.messenger());
-
-    // Create a callback for the flutterRegistrar to connect the applications
-    // onDestroy
-    registrar.addViewDestroyListener(new PluginRegistry.ViewDestroyListener() {
-      @Override
-      public boolean onViewDestroy(FlutterNativeView flutterNativeView) {
-        // Remove all handlers so they aren't triggered with wrong context
-        plugin.onDetachedFromEngine();
-        return false;
-      }
-    });
-  }
-
   @Override
   public void onMethodCall(MethodCall call, Result result) {
     if (call.method.contentEquals("OneSignal#initialize"))
